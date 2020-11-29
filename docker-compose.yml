@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  discourse:
+    build: .
+    ports:
+      - "3000:3000"
+    tmpfs: /var/www/tmp
+    environment:
+      DATABASE_URL: postgresql://postgres:pwd@postgres
+      DISCOURSE_DB_HOST: postgres
+      DISCOURSE_DB_PORT: 5432
+      DISCOURSE_DB_USERNAME: postgres
+      DISCOURSE_DB_PASSWORD: pwd
+      DISCOURSE_REDIS_HOST: redis
+      DISCOURSE_SMTP_ADDRESS: mailcatcher
+      DISCOURSE_SMTP_PORT: 1025
+      RAILS_ENV: development
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: pwd
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  mailcatcher:
+    image: citizensadvice/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+
+volumes:
+  pgdata:
